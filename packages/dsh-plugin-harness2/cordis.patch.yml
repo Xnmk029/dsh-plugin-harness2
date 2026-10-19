@@ -1,0 +1,53 @@
+# Bundle layer for dsh-plugin-harness2. `dsh plugin --profile <p> add .` appends
+# this package to the profile's bundle list; the layer then inserts one Loader
+# row that mounts the host plugin (src/index.ts -> lib/index.js). The package is
+# host-only: it declares no `dsh.client`.
+#
+# Config fields (all optional, see README):
+#   sections.*        literal (interpolate: false) prompt text for c1..c4; each
+#                     <key>File (absolute path, UTF-8) wins over the literal;
+#                     empty text registers no section
+#   recorder          trajectory listener on session/event; `path` is the JSONL
+#                     file ('' = off), `<path>.txt` (or textPath) gets the
+#                     [ACTION]/[OBSERVATION]/[ERROR] text, `maxChars` truncates
+#   guard             tools/pre-execute deny-lists: denyTools (names) and
+#                     denyPathGlobs (path arguments, keys in pathArgKeys)
+#
+# Switch the whole layer off without uninstalling, from the profile's own
+# cordis.patch.yml:
+#
+#   - id: harness2
+#     disabled: true
+#
+# Process-level `dsh-hooks-codex` rows are NOT inserted here, because that
+# package is experimental and its `configPath` is a per-machine absolute path.
+# Add them from your own patch (README, "Codex hooks bridge"):
+#
+#   - insert:
+#       - id: harness2-hooks-codex
+#         name: '@deepseek-ai/dsh-hooks-codex'
+#         config:
+#           configPath: /ABSOLUTE/PATH/TO/.codex/hooks.json
+#           model: deepseek-v4
+- insert:
+    - id: harness2
+      name: dsh-plugin-harness2
+      config:
+        sections:
+          systemPrompt: ''
+          systemPromptFile: ''
+          guardrails: ''
+          guardrailsFile: ''
+          memory: ''
+          memoryFile: ''
+          toolGuidance: ''
+          toolGuidanceFile: ''
+        recorder:
+          path: ''
+          text: true
+          textPath: ''
+          maxChars: 16384
+        guard:
+          denyTools: []
+          denyPathGlobs: []
+          pathArgKeys: [file_path, path, paths, filePath]

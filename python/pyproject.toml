@@ -1,0 +1,25 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "harness2-dsh"
+version = "0.1.0"
+description = "Python sidecar that drives DeepSeek Harness (dsh) as a Harness² substrate (dry-run first)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+dependencies = []
+
+[project.optional-dependencies]
+# Only needed for the optional SDK execution path (profile="sdk").
+sdk = ["deepseek-harness-sdk"]
+
+[project.scripts]
+harness2-dsh-dry-run = "harness2_dsh.dry_run:main"
+
+[tool.setuptools]
+packages = ["harness2_dsh"]
+
+[tool.setuptools.package-data]
+harness2_dsh = ["py.typed"]

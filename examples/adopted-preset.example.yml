@@ -1,0 +1,38 @@
+# Example: publish an *adopted* Harness² tree as a dsh agent preset (human-approved).
+# This is documentation + a sketch — NOT full Plugin Manager automation.
+#
+# After a blind selection + reflect_adoption, a human reviews the tree, then:
+#   1. Copy always-on files / skills / hooks into a durable adopted/ directory.
+#   2. Create a small bundle with package.json dsh.bundle.patch pointing here.
+#   3. dsh plugin --profile <user-profile> add file:<that-bundle>
+#   4. Confirm the preset appears in Web.
+#
+# Never run this path inside Propose–Probe–Compose recursion.
+# Never use Creator mode / plugin_manager during recursion.
+
+- insert:
+    - id: harness2-adopted-demo
+      name: "@deepseek-ai/dsh-agent-preset"
+      config:
+        id: harness2-adopted-demo
+        label: "Harness² adopted (demo)"
+        # plugins: composition entries — point at absolute adopted-tree paths
+        # after publication. Placeholders only:
+        plugins:
+          - id: adopted-persona-or-sections
+            name: "./path/to/dsh-plugin-harness2/src/sections.ts"
+            # OR use @deepseek-ai/dsh-persona with prefix/suffix from the tree
+          - id: adopted-skills
+            name: "@deepseek-ai/dsh-skill-filesystem"
+            config:
+              includeDefaultRoots: false
+              customSkillDirs:
+                - "/ABS/PATH/TO/adopted/.agents/skills"
+          - id: adopted-hooks
+            name: "@deepseek-ai/dsh-hooks-codex"
+            config:
+              configPath: "/ABS/PATH/TO/adopted/.codex/hooks.json"
+
+# Replace YOUR_GITHUB_USER/your-repo placeholders when packaging the bundle
+# for distribution — do that on YOUR machine after local git init (see
+# docs/NO_REMOTE_GIT.md). Never push from the shared agent box.

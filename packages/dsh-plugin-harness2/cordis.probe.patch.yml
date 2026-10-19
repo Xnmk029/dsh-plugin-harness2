@@ -1,0 +1,37 @@
+# Opt-in overlay for sandboxed probe runs. It is not the bundle patch; pass it
+# explicitly:
+#
+#   dsh --profile headless --patch node_modules/dsh-plugin-harness2/cordis.probe.patch.yml "<task>"
+#
+# The first row replaces the base `tool-web` row by id and disables it, so a
+# probe cannot reach the network through dsh's own web tools. It restates no
+# config because a disabled row is never mounted. The second row re-targets this
+# bundle's own `harness2` row (replace restates the whole config) with the
+# guard also denying the web tool names, as defence in depth. A real probe
+# copies this file and fills `sections.*File`, `recorder.path` and
+# `guard.denyPathGlobs` for its run.
+- id: tool-web
+  disabled: true
+
+- id: harness2
+  config:
+    sections:
+      systemPrompt: ''
+      systemPromptFile: ''
+      guardrails: ''
+      guardrailsFile: ''
+      memory: ''
+      memoryFile: ''
+      toolGuidance: ''
+      toolGuidanceFile: ''
+    recorder:
+      path: ''
+      text: true
+      textPath: ''
+      maxChars: 16384
+    guard:
+      denyTools:
+        - web_search
+        - web_fetch
+      denyPathGlobs: []
+      pathArgKeys: [file_path, path, paths, filePath]
